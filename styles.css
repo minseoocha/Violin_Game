@@ -1,0 +1,32 @@
+/* Set the body and container styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent scrolling */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Container with the background image */
+.game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('background.jpg'); /* Replace with your image URL */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Style the canvas to be centered and 80% of the container's width */
+canvas {
+    width: 30%; /* 80% of the container's width */
+    max-width: 1000px; /* Optional max-width to keep it from becoming too large */
+    height: 85%; /* Maintain aspect ratio */
+    background-color: rgba(222,184,135,1); /* Optional semi-transparent background */
+    border: 2px solid rgb(89, 74, 22); /* Optional border */
+}
