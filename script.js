@@ -47,7 +47,7 @@ function initializeTwinkleItems () {
     
     for(let i = 0; i < twinkleNotes.length; i++) {
         const column = twinkleColumns[i]; 
-        const x = column * columnWidth + columnWidth / 2; 
+        const x = column * colWidth + colWidth / 2; // Corrected variable name (columnWidth to colWidth)
         const size = 20;
         const y = -size; 
         const interval = 800; 
@@ -108,7 +108,7 @@ function drawItems() {
 
 //function with for loop
 function gameLoop () {
-    //deleting everything on canvas just incase
+    //deleting everything on canvas just in case
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     //draw columns as vertical lines (only defined mathematically)
@@ -140,16 +140,9 @@ document.getElementById('randomButton').addEventListener('click', function(){ //
     //start next time interval: grab randomly generated time interval and use for function 
     setTimeout(releaseItems, 0);
     gameLoop();
-
-    //NOTE
-    //items = notes that are randomly generated for the falling of game
-    //pregenereated items = details where each item will fall (get the elements from items and allocate x, y coordinate)
-        //pregenerated items has all info about "logistics" of element like x, y coordinate, size, interval...
-    //in the script, items comes before pregenerated items so later in code, you also have to put item before pregenerated items
-    //want to reset items to be empty array each time in other to randomly generate notes each time someone plays 
 });
 
-document.getElementById('twinkleButtom').addEventListener('click', function(){ //every time button is clicked...
+document.getElementById('twinkleButton').addEventListener('click', function(){ //fixed typo here, changed twinkleButtom to twinkleButton
     randomMode = false;
 
     items = []; //reset list 
@@ -159,16 +152,9 @@ document.getElementById('twinkleButtom').addEventListener('click', function(){ /
     //start next time interval: grab randomly generated time interval and use for function 
     setTimeout(releaseItems, 0);
     gameLoop();
-
-    //NOTE
-    //items = notes that are randomly generated for the falling of game
-    //pregenereated items = details where each item will fall (get the elements from items and allocate x, y coordinate)
-        //pregenerated items has all info about "logistics" of element like x, y coordinate, size, interval...
-    //in the script, items comes before pregenerated items so later in code, you also have to put item before pregenerated items
-    //want to reset items to be empty array each time in other to randomly generate notes each time someone plays 
 });
 
-//if () = asking if randomMode is true
+// Start the game on load
 if (randomMode) {
     initializeRandomItems();
 } else {
@@ -177,5 +163,3 @@ if (randomMode) {
 
 setTimeout(releaseItems, 0); //time interval is 0 so it can start immediately
 gameLoop();
-
- 
