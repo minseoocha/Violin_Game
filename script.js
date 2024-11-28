@@ -16,6 +16,11 @@ let preGeneratedItems = [];
 
 //options of music notes that can be played
 const musicNotes = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+const twinkleNotes = ['C', 'C', 'G', 'G', 'A', 'A', 'G', 'F', 'F', 'E', 'E', 'D', 'D', 'C', 'G', 'G', 'F', 'F', 'E', 'E', 'D', 'G', 'G', 'F', 'F', 'E', 'E', 'D', 'C', 'C', 'G', 'G', 'A', 'A', 'G', 'F', 'F', 'E', 'E', 'D', 'D', 'C'];
+const twinkleColumns = [0, 0, 2, 2, 3, 3, 2, 1, 1, 0, 0, 1, 1, 0]; // Map notes to columns
+
+//give them option of playing random sequence or pre-made sequence: letting computer know if randomMode is true, not if it is false
+let randomMode = true;
 
 //create function to create these 20 items
 function initializeItems() {
@@ -60,9 +65,10 @@ function updateItems() {
     items = items.filter(item => item.y < canvas.height + item.size); 
 }
 
-//function to draw items 
+//function to draw items (items -> circles on item.x, item.y -> text on item.x, item.y)
 function drawItems() {
     items.forEach(item => {
+        //drawing item as a circle  
         //fill the shape of the item in the color 'blue'
         ctx.fillStyle = 'blue';
         //starts drawing: resets its paths for "new section" of drawing
@@ -73,11 +79,16 @@ function drawItems() {
         ctx.fill();
         //finishes drawing
         ctx.closePath();
-        var paragraph = document.getElementById("p");
-        var text = document.createTextNode("This just got added");
 
-        paragraph.appendChild(text);
-
+        //drawing notes inside item 
+        //color of font
+        ctx.fillStyle = 'white';
+        //size of font
+        ctx.font = '11px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        //item.note indicates that chosen note of item is displayed
+        ctx.fillText(item.note, item.x, item.y);  
     });
 }
 
@@ -103,6 +114,20 @@ function gameLoop () {
     drawItems();
 
     requestAnimationFrame(gameLoop);
+}
+
+//funciton that makes specific song
+function musicOne () {
+    
+    for(let i = 0; i < twinkleNotes.length; i++) {
+        const column = twinkleColumns[i]; 
+        const x = column * columnWidth + columnWidth / 2; 
+        const size = 20;
+        const y = -size; 
+        const interval = 800; 
+        const note = twinkleNotes[i]; 
+        preGeneratedItems.push({ x, y, size, note, column, interval });
+    }
 }
 
 initializeItems(); //create 20 items
