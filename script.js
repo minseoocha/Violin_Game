@@ -23,7 +23,7 @@ const twinkleColumns = [0, 0, 2, 2, 3, 3, 2, 1, 1, 0, 0, 1, 1, 0]; // Map notes 
 let randomMode = true;
 
 //create function to create these 20 items
-function initializeItems() {
+function initializeRandomItems() {
     for(let i = 0; i < 20; i++) {
         //randomly defining columns where items will fall  
         const column = Math.floor(Math.random() * numCol); 
@@ -39,6 +39,20 @@ function initializeItems() {
         const note = musicNotes[Math.floor(Math.random() * musicNotes.length)];
         //push info into item list (adding location, size, intervals of item)
         preGeneratedItems.push({x, y, size, interval, note, column}); 
+    }
+}
+
+//funciton that makes specific song
+function initializeTwinkleItems () {
+    
+    for(let i = 0; i < twinkleNotes.length; i++) {
+        const column = twinkleColumns[i]; 
+        const x = column * columnWidth + columnWidth / 2; 
+        const size = 20;
+        const y = -size; 
+        const interval = 800; 
+        const note = twinkleNotes[i]; 
+        preGeneratedItems.push({ x, y, size, note, column, interval });
     }
 }
 
@@ -116,21 +130,51 @@ function gameLoop () {
     requestAnimationFrame(gameLoop);
 }
 
-//funciton that makes specific song
-function musicOne () {
-    
-    for(let i = 0; i < twinkleNotes.length; i++) {
-        const column = twinkleColumns[i]; 
-        const x = column * columnWidth + columnWidth / 2; 
-        const size = 20;
-        const y = -size; 
-        const interval = 800; 
-        const note = twinkleNotes[i]; 
-        preGeneratedItems.push({ x, y, size, note, column, interval });
-    }
+document.getElementById('randomButton').addEventListener('click', function(){ //every time button is clicked...
+    randomMode = true;
+
+    items = []; //reset list 
+    preGeneratedItems = []; 
+    initializeRandomItems();
+
+    //start next time interval: grab randomly generated time interval and use for function 
+    setTimeout(releaseItems, 0);
+    gameLoop();
+
+    //NOTE
+    //items = notes that are randomly generated for the falling of game
+    //pregenereated items = details where each item will fall (get the elements from items and allocate x, y coordinate)
+        //pregenerated items has all info about "logistics" of element like x, y coordinate, size, interval...
+    //in the script, items comes before pregenerated items so later in code, you also have to put item before pregenerated items
+    //want to reset items to be empty array each time in other to randomly generate notes each time someone plays 
+});
+
+document.getElementById('twinkleButtom').addEventListener('click', function(){ //every time button is clicked...
+    randomMode = false;
+
+    items = []; //reset list 
+    preGeneratedItems = []; 
+    initializeTwinkleItems();
+
+    //start next time interval: grab randomly generated time interval and use for function 
+    setTimeout(releaseItems, 0);
+    gameLoop();
+
+    //NOTE
+    //items = notes that are randomly generated for the falling of game
+    //pregenereated items = details where each item will fall (get the elements from items and allocate x, y coordinate)
+        //pregenerated items has all info about "logistics" of element like x, y coordinate, size, interval...
+    //in the script, items comes before pregenerated items so later in code, you also have to put item before pregenerated items
+    //want to reset items to be empty array each time in other to randomly generate notes each time someone plays 
+});
+
+//if () = asking if randomMode is true
+if (randomMode) {
+    initializeRandomItems();
+} else {
+    initializeTwinkleItems();
 }
 
-initializeItems(); //create 20 items
 setTimeout(releaseItems, 0); //time interval is 0 so it can start immediately
 gameLoop();
 
