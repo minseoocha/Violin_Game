@@ -133,3 +133,5 @@ function musicOne () {
 initializeItems(); //create 20 items
 setTimeout(releaseItems, 0); //time interval is 0 so it can start immediately
 gameLoop();
+
+ 
