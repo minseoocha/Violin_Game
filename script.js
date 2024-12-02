@@ -9,13 +9,24 @@ const colWidth = canvas.width / numCol;
 let items = [];
 
 //speed of moving object constant 
-const dropSpeed = 0.5;
+let dropSpeed = 0.5;
+
+//interval between falling items
+let itemInterval = 3000;
 
 //pregenerating 20 items with randomized appearance intervals
 let preGeneratedItems = [];
 
 //options of music notes that can be played
-const musicNotes = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+//used for intermediate and challenging randomized levels
+const musicNotes = ['A', 'B', 'C', 'D', 'E', 'F', 'G']; 
+//used for easy randomized levvel 
+const easyNotes = [['G', 'A', 'B', 'C', 'D'], // Column 1 
+['D', 'E', 'F', 'G', 'A'], // Column 2
+['A', 'B', 'C', 'D', 'E'], // Column 3
+['E', 'F', 'G', 'A', 'B']];  // Column 4]
+
+//used for specific song
 const twinkleNotes = ['C', 'C', 'G', 'G', 'A', 'A', 'G', 'F', 'F', 'E', 'E', 'D', 'D', 'C', 'G', 'G', 'F', 'F', 'E', 'E', 'D', 'G', 'G', 'F', 'F', 'E', 'E', 'D', 'C', 'C', 'G', 'G', 'A', 'A', 'G', 'F', 'F', 'E', 'E', 'D', 'D', 'C'];
 const twinkleColumns = [0, 0, 2, 2, 3, 3, 2, 1, 1, 0, 0, 1, 1, 0]; // Map notes to columns
 
@@ -33,19 +44,24 @@ function initializeRandomItems() {
         const size = 20; //will have to play with size
         //item should fall from top
         const y = -size;
-        //randomize intervals of falling item
-        if document.getElementById('easyRandomButton').addEventListener('click', function(){ //every time button is clicked...
-            const interval = Math.random() * 5000 + 1500; //interval within 0.5-2.5 seconds
-            else document.getElementById('interRandomButton').addEventListener('click', function()//every time button is clicked...
-                const interval = Math.random() * 1000 + 1500; //interval within 0.5-2.5 seconds
-                else document.getElementById('hardRandmoButton').addEventListener('click', function() //every time button is clicked...
-                    const interval = Math.random() * 800 + 1500; //interval within 0.5-2.5 seconds
-         
-        //const interval = Math.random() * 5000 + 1500; //interval within 0.5-2.5 seconds
-        //choose which note that is put on the object
-        const note = musicNotes[Math.floor(Math.random() * musicNotes.length)];
+        //interval from easy to hard random level (3 items we are changing)
+        if(mode === 'easy'){//=== used when the way it looks has to be exactly the same
+            //determine which notes can be played in each column 
+            const note = easyNotes[column][Math.floor(Math.random() * easyNotes[column].length)];
+            dropSpeed = 0.5; 
+            itemInterval = Math.random() * 5000 + 1500;
+        } else if(mode === 'intermediate'){
+            //instead of limiting specific notes on each column
+            const note = musicNotes[Math.floor(Math.random() * musicNotes.length)]; 
+            dropSpeed = 0.6; 
+            itemInterval = Math.random() * 3000 + 1000;
+        } else if(mode === 'hard'){
+            const note = musicNotes[Math.floor(Math.random() * musicNotes.length)]; 
+            dropSpeed = 0.7; 
+            itemInterval = Math.random() * 1000 + 1000;
+        }
         //push info into item list (adding location, size, intervals of item)
-        preGeneratedItems.push({x, y, size, interval, note, column}); 
+        preGeneratedItems.push({x, y, size, note, column, interval}); 
     }
 }
 
@@ -59,7 +75,7 @@ function initializeTwinkleItems () {
         const y = -size; 
         const interval = 1500; 
         const note = twinkleNotes[i]; 
-        preGeneratedItems.push({ x, y, size, note, column, interval });
+        preGeneratedItems.push({ x, y, size, note, column, interval});
     }
 }
 
@@ -71,7 +87,7 @@ function releaseItems() {
         const item = preGeneratedItems.shift();
         items.push(item);
         //start next time interval: grab randomly generated time interval and use for function 
-        setTimeout(releaseItems, item.interval);
+        setTimeout(releaseItems, itemInterval);
     }
 }
 
@@ -137,16 +153,37 @@ function gameLoop () {
     requestAnimationFrame(gameLoop);
 }
 
-document.getElementById('randomButton').addEventListener('click', function(){ //every time button is clicked...
+document.getElementById('easyRandomButton').addEventListener('click', function(){ //every time button is clicked...
     randomMode = true;
 
     items = []; //reset list 
     preGeneratedItems = []; 
-    initializeRandomItems();
+    initializeRandomItems('easy'); //condition for this function is mode === 'easy'
 
     //start next time interval: grab randomly generated time interval and use for function 
-    setTimeout(releaseItems, 0);
-    gameLoop();
+    releaseItems();
+});
+
+document.getElementById('intermediateRandomButton').addEventListener('click', function(){ //every time button is clicked...
+    randomMode = true;
+
+    items = []; //reset list 
+    preGeneratedItems = []; 
+    initializeRandomItems('intermediate');
+
+    //start next time interval: grab randomly generated time interval and use for function 
+    releaseItems();
+});
+
+document.getElementById('hardRandomButton').addEventListener('click', function(){ //every time button is clicked...
+    randomMode = true;
+
+    items = []; //reset list 
+    preGeneratedItems = []; 
+    initializeRandomItems('hard');
+
+    //start next time interval: grab randomly generated time interval and use for function 
+    releaseItems();
 });
 
 document.getElementById('twinkleButton').addEventListener('click', function(){ //fixed typo here, changed twinkleButtom to twinkleButton
@@ -157,16 +194,8 @@ document.getElementById('twinkleButton').addEventListener('click', function(){ /
     initializeTwinkleItems();
 
     //start next time interval: grab randomly generated time interval and use for function 
-    setTimeout(releaseItems, 0);
-    gameLoop();
+    releaseItems();
 });
 
-// Start the game on load
-if (randomMode) {
-    initializeRandomItems();
-} else {
-    initializeTwinkleItems();
-}
-
-setTimeout(releaseItems, 0); //time interval is 0 so it can start immediately
 gameLoop();
+
