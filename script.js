@@ -34,7 +34,14 @@ function initializeRandomItems() {
         //item should fall from top
         const y = -size;
         //randomize intervals of falling item
-        const interval = Math.random() * 2000 + 500; //interval within 0.5-2.5 seconds
+        if document.getElementById('easyRandomButton').addEventListener('click', function(){ //every time button is clicked...
+            const interval = Math.random() * 5000 + 1500; //interval within 0.5-2.5 seconds
+            else document.getElementById('interRandomButton').addEventListener('click', function()//every time button is clicked...
+                const interval = Math.random() * 1000 + 1500; //interval within 0.5-2.5 seconds
+                else document.getElementById('hardRandmoButton').addEventListener('click', function() //every time button is clicked...
+                    const interval = Math.random() * 800 + 1500; //interval within 0.5-2.5 seconds
+         
+        //const interval = Math.random() * 5000 + 1500; //interval within 0.5-2.5 seconds
         //choose which note that is put on the object
         const note = musicNotes[Math.floor(Math.random() * musicNotes.length)];
         //push info into item list (adding location, size, intervals of item)
@@ -50,7 +57,7 @@ function initializeTwinkleItems () {
         const x = column * colWidth + colWidth / 2; // Corrected variable name (columnWidth to colWidth)
         const size = 20;
         const y = -size; 
-        const interval = 800; 
+        const interval = 1500; 
         const note = twinkleNotes[i]; 
         preGeneratedItems.push({ x, y, size, note, column, interval });
     }
