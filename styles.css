@@ -4,8 +4,9 @@ body, html {
     padding: 0;
     overflow: hidden; /* Prevent scrolling */
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* aligns items at top of page */
     height: 100vh;
 }
 
@@ -13,13 +14,14 @@ body, html {
 .game-container {
     position: relative;
     width: 100vw;
-    height: 100vh;
+    height: 80vh;
     background-image: url('background.jpg'); /* Replace with your image URL */
     background-size: cover;
     background-position: center;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column; /* stacking buttons on top of canvas */
 }
 
 /* Style the canvas to be centered and 80% of the container's width */
@@ -29,4 +31,40 @@ canvas {
     height: 85%; /* Maintain aspect ratio */
     background-color: rgba(222,184,135,1); /* Optional semi-transparent background */
     border: 2px solid rgb(89, 74, 22); /* Optional border */
+}
+
+/* Create container for where buttons are placed */
+.button-container {
+    display: flex;
+    background-color:bisque;
+    justify-content: center; /* horizontally centers button */
+    align-items: center; /* vertically centers buttons */
+    flex-wrap: wrap; /* allow buttons to wrap if needed */
+    gap: 10px; /* space between buttons */
+    padding: 20px; /* vertical size of container */
+    width: 100%;
+}
+
+/* Create styles for button */
+button {
+    padding: 10px 20px; 
+    font-size: 16px; 
+    cursor: pointer;
+    background-color:darksalmon; /* color of buttons */
+    color: white; 
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s; /* when you click button, for 0.3sec stays */
+}
+
+button:hover {
+    background-color: indianred;/* color when hover over button */
+}
+
+button:active {
+    background-color: indianred;/* color when button clicked */
+}
+
+button.active:active {
+    background-color: indianred;/* color when hover over button */   
 }

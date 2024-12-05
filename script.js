@@ -34,7 +34,9 @@ const twinkleColumns = [0, 0, 2, 2, 3, 3, 2, 1, 1, 0, 0, 1, 1, 0]; // Map notes 
 let randomMode = true;
 
 //create function to create these 20 items
-function initializeRandomItems() {
+function initializeRandomItems(mode) {
+    //offsetY is new variable, whenever values are really close make space in between
+    let offsetY = 0;
     for(let i = 0; i < 20; i++) {
         //randomly defining columns where items will fall  
         const column = Math.floor(Math.random() * numCol); 
@@ -43,22 +45,30 @@ function initializeRandomItems() {
         //define size of falling item
         const size = 20; //will have to play with size
         //item should fall from top
-        const y = -size;
+        const y = -size -offsetY;
+        offsetY += size + 10;
+        //define note and interval
+        let note, interval;        
+
         //interval from easy to hard random level (3 items we are changing)
         if(mode === 'easy'){//=== used when the way it looks has to be exactly the same
             //determine which notes can be played in each column 
-            const note = easyNotes[column][Math.floor(Math.random() * easyNotes[column].length)];
+            note = easyNotes[column][Math.floor(Math.random() * easyNotes[column].length)];
             dropSpeed = 0.5; 
-            itemInterval = Math.random() * 5000 + 1500;
+            //interval defined in milliseconds 
+            interval = Math.max(Math.random() * 5000 + 1500, 3000);
         } else if(mode === 'intermediate'){
             //instead of limiting specific notes on each column
-            const note = musicNotes[Math.floor(Math.random() * musicNotes.length)]; 
+            note = musicNotes[Math.floor(Math.random() * musicNotes.length)]; 
             dropSpeed = 0.6; 
-            itemInterval = Math.random() * 3000 + 1000;
-        } else if(mode === 'hard'){
-            const note = musicNotes[Math.floor(Math.random() * musicNotes.length)]; 
+            interval = Math.random() * 3000 + 1000;
+            //Math.max: choose the bigger number between these two values(a, b)
+            interval = Math.max(itemInterval, 2000); 
+            console.log(itemInterval, preGeneratedItems);
+        } else if(mode === 'challenging'){
+            note = musicNotes[Math.floor(Math.random() * musicNotes.length)]; 
             dropSpeed = 0.7; 
-            itemInterval = Math.random() * 1000 + 1000;
+            interval = Math.random() * 1000 + 1000;
         }
         //push info into item list (adding location, size, intervals of item)
         preGeneratedItems.push({x, y, size, note, column, interval}); 
@@ -87,7 +97,7 @@ function releaseItems() {
         const item = preGeneratedItems.shift();
         items.push(item);
         //start next time interval: grab randomly generated time interval and use for function 
-        setTimeout(releaseItems, itemInterval);
+        setTimeout(releaseItems, item.interval);
     }
 }
 
@@ -180,7 +190,7 @@ document.getElementById('hardRandomButton').addEventListener('click', function()
 
     items = []; //reset list 
     preGeneratedItems = []; 
-    initializeRandomItems('hard');
+    initializeRandomItems('challenging');
 
     //start next time interval: grab randomly generated time interval and use for function 
     releaseItems();
@@ -197,5 +207,14 @@ document.getElementById('twinkleButton').addEventListener('click', function(){ /
     releaseItems();
 });
 
+//to create button active in css
+document.querySelectorAll('button').forEach(button => { //getting all 4 buttons from html
+    button.addEventListener('click', () => {
+        //removes active in the class of a button 
+        document.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+        //add 'active' class to the clicked button (categorizing it as active)
+        button.classList.add('active');
+    });
+});
 gameLoop();
 
