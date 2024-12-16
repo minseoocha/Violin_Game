@@ -57,14 +57,15 @@ button {
     transition: background-color 0.3s; /* when you click button, for 0.3sec stays */
 }
 
-button:hover {
+button:focus {
     background-color: indianred;/* color when hover over button */
 }
 
-button:active {
+/*button:active {
     background-color: indianred;/* color when button clicked */
-}
+/*}
 
-button.active:active {
+/*button.focus {
     background-color: indianred;/* color when hover over button */   
-}
+/*}
+
