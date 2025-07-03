@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title> <!--writing on tab-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.39/Tone.min.js"></script> <!--api: detect sound-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pitchfinder/1.2.0/pitchfinder.min.js"></script> <!--api: convert sound into pitch-->
+    <!--use these apis to access sound and turn into music notes-->
+    <style> /*embed css code on html instead of creating new css */
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        #note { /* way to style a specific variable in css*/
+            font-size: 48px;
+            color: black;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Note Grader</h1>
+    <div id = "note">C4</div>
+    <button onclick = "generateRandomNote()">New Note</button>
+    <button onclick = "startListening()">Start Listening</button>
+
+    <script>
+        const notes = ['A','B','C','D','E'];
+        let targetNote = 'C';
+        const noteElement = document.getElementById("note");
+
+        function generateRandomNote() {
+            targetNote = notes[Math.floor(Math.random()*notes.length)];
+            noteElement.innerText = targetNote;
+            noteElement.style.color = "black";
+        }
+
+        async function startListening() { /* detect all devices considered microphones, detect which one active, choose active one as 'analyzer'*/
+            const mic = await navigator.mediaDevices.getUserMedia({audio:true});
+            const audioContext = new AudioContext();
+            const source = audioContext.createMediaStreamSource(mic);
+            const analyzer = audioContext.createAnalyser();
+            source.connect(analyzer);
+            
+            const detectPitch = Pitchfinder.AMDF();
+            const buffer = new Float32Array(analyzer.fftSize);
+
+            function getPitch() {
+                analyzer.getFloatTimeDomainData(buffer);
+                const pitch = detectPitch(buffer,audioContext.sampleRate);
+                if(pitch) {
+                    const detectedNote = frequencyToNote(pitch);
+                    checkNote(detectedNote);
+                }
+                requestAnimationFrame(getPitch); /*if no sound, keep doing this - async function*/analyzer
+            }
+            getPitch();
+        }
+
+        function frequencyToNote(freq) {
+            const A = 440;
+            const semitoneRatio = Math.pow(2, 1 / 12);
+            const noteNames = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+            const noteNum = Math.round(12 * Math.log2(freq / A) + 57);
+            const noteName = noteNames[noteNum % 12] + Math.floor(noteNum / 12);
+            return noteName;
+        }
+
+        function checkNote(detectedNote) {
+            if (detectedNote === targetNote) { 
+                noteElement.style.color = "green";
+            }
+            else {
+                noteElement.style.color = "red";
+            }
+        }
+    </script>
+</body>
+</html>
